@@ -1,0 +1,19 @@
+{
+  "name": "jqio",
+  "version": "0.0.1",
+  "description": "Pipe-styled JSON processor",
+  "keywords": ["jq", "json", "pipe", "filter"],
+  "repository": "git://github.com/shinohane/node-jqio.git",
+  "author": "Shinohane <imandry.c@gmail.com> (http://shinohane.com)",
+  "dependencies": { },
+  "devDependencies": {
+    "mocha": "*",
+    "pegjs": "*",
+    "chai": "*"
+  },
+  "scripts": {
+      "test": "mocha -R spec"
+  },
+  "engines": { "node": ">= 0.5.0" },
+  "license": "MIT"
+}
