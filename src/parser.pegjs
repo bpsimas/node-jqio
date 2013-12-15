@@ -1,4 +1,10 @@
 
+{
+  var map = function (f) {
+    return '(function (jsons) { var r = []; for (var i = 0; i != jsons.length; i++) r.push(' + f + '(jsons[i])); return r })'
+  };
+}
+
 start
   = filter:filter
 {
@@ -25,7 +31,7 @@ comma
 dot
   = '.' key:key
 {
-  return '(function (json) { return Array.isArray(json)?json[0]["' + key + '"]:json.' + key + ' })'
+  return map('(function (json) { return Array.isArray(json)?' + map('(function (x) { return x.' + key + ' })') + '(json):json.' + key + ' })')
 }
   / '.[' range:range ']'
 {
