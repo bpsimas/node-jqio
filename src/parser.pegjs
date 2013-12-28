@@ -80,7 +80,11 @@ dot
 {
   return map(def('json')()('json.slice(' + range.start + ', ' + range.end + ')'))
 }
-  / '.[' _ name:(int/string/identifier) _ ']'
+  / '.[' _ index:int _ ']'
+{
+  return map(def('json')()('json[' + index + ']'))
+}
+  / '.[' _ name:(string/identifier) _ ']'
 {
   return map(def('json')()('json["' + name + '"]'))
 }
