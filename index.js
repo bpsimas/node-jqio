@@ -1,6 +1,6 @@
 
 var compiled = {};
-var parser = require('./lib/parser');
+var parser = require('./gen/parser');
 
 module.exports = function (expr, cb) {
     var filter;

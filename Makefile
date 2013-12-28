@@ -1,12 +1,12 @@
 
-all: lib lib/parser.js
+all: gen gen/parser.js
 
-lib/parser.js: src/parser.pegjs
+gen/parser.js: src/parser.pegjs
 	pegjs $< $@ || rm -rf $@
 
-lib:
-	mkdir lib
+gen:
+	mkdir gen
 
 clean:
-	rm -rf lib
+	rm -rf gen
 
