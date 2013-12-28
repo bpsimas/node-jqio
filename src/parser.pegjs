@@ -79,7 +79,9 @@ dot
 }
   / '.[' _ range:range _ ']'
 {
-  return map(def('json')()('json.slice(' + range.start + ', ' + range.end + ')'))
+  var st = range.start || 0, ed = range.end || Number.POSITIVE_INFINITY
+
+  return map(def('json')()('Array.prototype.slice.call(json, ' + st + ', ' + ed + ')'))
 }
   / '.[' _ index:int _ ']'
 {
@@ -123,6 +125,8 @@ identifier "identifier"
 {
   return name
 }
+
+integer = parts:$(int) _ { return parseInt(parts, 10) }
 
 // JSON Literal Definition {{{
 
