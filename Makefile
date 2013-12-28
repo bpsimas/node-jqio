@@ -1,8 +1,10 @@
 
+PEG=./node_modules/.bin/pegjs
+
 all: gen gen/parser.js
 
 gen/parser.js: src/parser.pegjs
-	pegjs $< $@ || rm -rf $@
+	$(PEG) $< $@ || rm -rf $@
 
 gen:
 	mkdir gen
