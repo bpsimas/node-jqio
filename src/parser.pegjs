@@ -110,65 +110,65 @@ pair "pair"
   return { a: a, b: b }
 }
 
-// Lexical Elements {{{
-
-identifier "identifier"
-  = name:$([a-zA-Z_$] [a-zA-Z0-9_$]*)
-{
-  return name;
-}
-
 literal
   = value:($string/number/true/false/null)
 {
   return def()()(value)
 }
 
+// Lexical Elements {{{
+
+identifier "identifier"
+  = name:$([a-zA-Z_$] [a-zA-Z0-9_$]*)
+{
+  return name
+}
+
 // JSON Literal Definition {{{
 
-true  = "true"  _ { return true   }
-false = "false" _ { return false  }
-null  = "null"  _ { return null   }
+true  = 'true'  _ { return true   }
+false = 'false' _ { return false  }
+null  = 'null'  _ { return null   }
 
 string "string"
-  = '"' '"' _             { return "";    }
-  / '"' chars:chars '"' _ { return chars; }
-  / "'" "'" _             { return '';    }
-  / "'" chars:chars "'" _ { return chars; }
+  = '"' '"' _             { return ""     }
+  / '"' chars:chars '"' _ { return chars  }
+  / "'" "'" _             { return ''     }
+  / "'" chars:chars "'" _ { return chars  }
 
 chars
-  = chars:char+ { return chars.join(""); }
+  = chars:char+ { return chars.join('')  }
 
 char
   = [^"'\\\0-\x1F\x7f] // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
-  / '\\"'  { return '"';  }
-  / "\\'"  { return "'";  }
-  / "\\\\" { return "\\"; }
-  / "\\/"  { return "/";  }
-  / "\\b"  { return "\b"; }
-  / "\\f"  { return "\f"; }
-  / "\\n"  { return "\n"; }
-  / "\\r"  { return "\r"; }
-  / "\\t"  { return "\t"; }
-  / "\\u" digits:$(hexDigit hexDigit hexDigit hexDigit)
+  / '\\"'  { return '"'   }
+  / "\\'"  { return "'"   }
+  / '\\\\' { return '\\'  }
+  / '\\/'  { return '/'   }
+  / '\\b'  { return '\b'  }
+  / '\\f'  { return '\f'  }
+  / '\\n'  { return '\n'  }
+  / '\\r'  { return '\r'  }
+  / '\\t'  { return '\t'  }
+  / '\\u' digits:$(hexDigit hexDigit hexDigit hexDigit)
 {
-  return String.fromCharCode(parseInt(digits, 16));
+  return String.fromCharCode(parseInt(digits, 16))
 }
 
 number "number"
-  = parts:$(int frac exp) _ { return parseFloat(parts); }
-  / parts:$(int frac) _     { return parseFloat(parts); }
-  / parts:$(int exp) _      { return parseFloat(parts); }
-  / parts:$(int) _          { return parseFloat(parts); }
+  = parts:$(int frac exp) _ { return parseFloat(parts)  }
+  / parts:$(int frac) _     { return parseFloat(parts)  }
+  / parts:$(int exp) _      { return parseFloat(parts)  }
+  / parts:$(int) _          { return parseFloat(parts)  }
 
 int
   = digit19 digits
   / digit
-  / "-" digit19 digits
-  / "-" digit
+  / '-' digit19 digits
+  / '-' digit
 
 frac
-  = "." digits
+  = '.' digits
 
 exp
   = e digits
