@@ -72,7 +72,7 @@ comma
   / dot
 
 dot
-  = '.' key:$(identifier)
+  = '.' key:(identifier/string)
 {
   return map(def('json')()('json.' + key))
 }
@@ -80,7 +80,7 @@ dot
 {
   return map(def('json')()('json.slice(' + range.start + ', ' + range.end + ')'))
 }
-  / '.[' _ name:$(int/string/identifier) _ ']'
+  / '.[' _ name:(int/string/identifier) _ ']'
 {
   return map(def('json')()('json["' + name + '"]'))
 }
@@ -96,7 +96,7 @@ dot
 range = pair
 
 pair "pair"
-  = start:$(int) _ ':' _ end:$(int)
+  = start:int _ ':' _ end:int
 {
   return { start: start, end: end }
 }
