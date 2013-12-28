@@ -7,8 +7,8 @@
   "author": "Shinohane <imandry.c@gmail.com> (http://shinohane.com)",
   "dependencies": { },
   "devDependencies": {
+    "pegjs": ">= 0.8.0",
     "mocha": "*",
-    "pegjs": "*",
     "chai": "*"
   },
   "scripts": {
