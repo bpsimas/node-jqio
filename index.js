@@ -5,9 +5,6 @@ var parser = require('./gen/parser');
 module.exports = function (expr, cb) {
     var filter;
 
-    // Remove blanks in expression
-    expr = expr.replace(/[ \n\r\t]/g, '');
-
     if (compiled.hasOwnProperty(expr)) {
         filter = compiled[expr];
     } else {
@@ -22,6 +19,7 @@ module.exports = function (expr, cb) {
             }
         }
     }
+
     return (cb && cb(null, filter)) || filter;
 };
 

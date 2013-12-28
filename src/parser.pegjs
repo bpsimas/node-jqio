@@ -49,7 +49,7 @@
 // }}}
 
 start
-  = filter:filter
+  = _ filter:filter _
 {
   return eval(filter)
 }
@@ -58,49 +58,47 @@ filter
   = pipe
 
 pipe
-  = left:comma '|' right:pipe
+  = left:comma _ '|' _ right:pipe
 {
   return def('json')()(right + '(' + left + '(json))')
 }
   / comma
 
 comma
-  = left:dot ',' right:comma
+  = left:dot _ ',' _ right:comma
 { 
   return def('json')()(left + '(json).concat(' + right + '(json))')
 }
   / dot
 
 dot
-  = '.' key:key
+  = '.' key:$(identifier)
 {
   return map(def('json')()('json.' + key))
 }
-  / '.[' range:range ']'
+  / '.[' _ range:range _ ']'
 {
   return map(def('json')()('json.slice(' + range.start + ', ' + range.end + ')'))
 }
-  / '.[' name:int/string/key ']'
+  / '.[' _ name:$(int/string/identifier) _ ']'
 {
   return map(def('json')()('json["' + name + '"]'))
 }
-  / '.[]'
+  / '.[' _ ']'
 {
   return conj()
 }
   / '.'
 {
-  return ''
+  return def('json')()('json')
 }
-
-key = identifier
 
 range = pair
 
 pair "pair"
   = start:$(int) _ ':' _ end:$(int)
 {
-  return { start: start, end: end };
+  return { start: start, end: end }
 }
 
 // Lexical Elements {{{
