@@ -74,7 +74,7 @@ comma
 dot
   = '.' key:(identifier/string)
 {
-  return map(def('json')()('json.' + key))
+  return map(def('json')()('json["' + key + '"]'))
 }
   / '.[' _ range:range _ ']'
 {
