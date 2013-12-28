@@ -1,4 +1,6 @@
 
+// Global Functions {{{
+
 {
 
   // def( <arglist> )( <body> )( <retval> )
@@ -43,6 +45,8 @@
   }
 
 }
+
+// }}}
 
 start
   = filter:filter
