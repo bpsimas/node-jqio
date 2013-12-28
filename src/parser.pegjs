@@ -66,7 +66,7 @@ pipe
 
 comma
   = left:dot _ ',' _ right:comma
-{ 
+{
   return def('json')()(left + '(json).concat(' + right + '(json))')
 }
   / dot
@@ -93,12 +93,16 @@ dot
   return def('json')()('json')
 }
 
-range = pair
+range
+  = pair:pair
+{
+  return { start: pair.a, end: pair.b }
+}
 
 pair "pair"
-  = start:int _ ':' _ end:int
+  = a:int _ ':' _ b:int
 {
-  return { start: start, end: end }
+  return { a: a, b: b }
 }
 
 // Lexical Elements {{{
