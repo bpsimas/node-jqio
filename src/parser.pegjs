@@ -83,7 +83,7 @@ dot
 
   return map(def('json')()('Array.prototype.slice.call(json, ' + st + ', ' + ed + ')'))
 }
-  / '.[' _ index:int _ ']'
+  / '.[' _ index:integer _ ']'
 {
   return map(def('json')()('json[' + index + ']'))
 }
