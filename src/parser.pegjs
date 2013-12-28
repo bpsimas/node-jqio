@@ -101,15 +101,9 @@ dot
 }
 
 range
-  = pair:pair
+  = start:integer? _ ':' _ end:integer?
 {
-  return { start: pair.a, end: pair.b }
-}
-
-pair "pair"
-  = a:int _ ':' _ b:int
-{
-  return { a: a, b: b }
+  return { start: start, end: end }
 }
 
 literal
