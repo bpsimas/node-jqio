@@ -121,13 +121,16 @@ literal
 string "string"
   = '"' '"' _             { return "";    }
   / '"' chars:chars '"' _ { return chars; }
+  / "'" "'" _             { return '';    }
+  / "'" chars:chars "'" _ { return chars; }
 
 chars
   = chars:char+ { return chars.join(""); }
 
 char
-  = [^"\\\0-\x1F\x7f] // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
+  = [^"'\\\0-\x1F\x7f] // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
   / '\\"'  { return '"';  }
+  / "\\'"  { return "'";  }
   / "\\\\" { return "\\"; }
   / "\\/"  { return "/";  }
   / "\\b"  { return "\b"; }
