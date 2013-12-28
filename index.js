@@ -2,7 +2,7 @@
 var compiled = {};
 var parser = require('./gen/parser');
 
-module.exports = function (expr, cb) {
+var jqio = module.exports = function (expr, cb) {
     var filter;
 
     if (compiled.hasOwnProperty(expr)) {
@@ -10,6 +10,8 @@ module.exports = function (expr, cb) {
     } else {
         try {
             filter = parser.parse(expr);
+            filter.code = expr;
+
             compiled[expr] = filter;
         } catch (err) {
             if (cb) {
@@ -21,5 +23,14 @@ module.exports = function (expr, cb) {
     }
 
     return (cb && cb(null, filter)) || filter;
+};
+
+var fs = require('fs');
+
+jqio.load = function (filename, cb) {
+    fs.readFile(filename, function (err, data) {
+        if (err) return cb(err);
+        return jqio(data.toString(), cb);
+    });
 };
 
