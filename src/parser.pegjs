@@ -1,8 +1,41 @@
 
 {
+
+  // def(<argument 1>, <argument 2>, ...)( body )( return value ) => function text
+  var def = function () {
+    var capture = Array.prototype.slice.call(arguments, 0)
+    return function () {
+      var body = Array.prototype.slice.call(arguments, 0).join(';');
+      return function (ret) {
+        return '(function (' + capture.join(',') + ') { ' + body + '; ' + 'return (' + ret + '); })'
+      }
+    }
+  }
+
+  // map(<function code>) => map function text
   var map = function (f) {
-    return '(function (jsons) { var r = []; for (var i = 0; i != jsons.length; i++) r.push(' + f + '(jsons[i])); return r })'
-  };
+    return def('a')(
+        'var r = []',
+        'for (var i = 0; i != a.length; i++) {',
+        'r.push(' + f + '(a[i]))',
+        '}'
+    )('r')
+  }
+
+  var reduce = function (s, f) {
+    return def('a')(
+        'var r = ' + s,
+        'for (var i = 0; i != a.length; i++) {',
+        'r = ' + f + '(r, a[i])',
+        '}'
+    )('r')
+  }
+
+  // conj() => function text yield conjucted array from input list of array
+  var conj = function () {
+    return reduce('[]', def('r', 'x')('Array.prototype.push.apply(r, x)')('r'));
+  }
+
 }
 
 start
@@ -16,42 +49,38 @@ filter
 
 pipe
   = left:comma '|' right:pipe
-{ 
-  return '(function (json) { return ' + right + '(' + left + '(json)) })'
+{
+  return def('json')()(right + '(' + left + '(json))')
 }
   / comma
 
 comma
   = left:dot ',' right:comma
 { 
-  return '(function (json) { return ' + left + '(json).concat(' + right + '(json)) })'
+  return def('json')()(left + '(json).concat(' + right + '(json))')
 }
   / dot
 
 dot
   = '.' key:key
 {
-  return map('(function (json) { return Array.isArray(json)?' + map('(function (x) { return x.' + key + ' })') + '(json):json.' + key + ' })')
+  return map(def('json')()('json.' + key))
 }
   / '.[' range:range ']'
 {
-
+  return map(def('json')()('json.slice(' + range.start + ', ' + range.end + ')'))
 }
-  / '.[' index:integer ']'
+  / '.[' name:integer/string/key ']'
 {
-
-}
-  / '.[' name:(string/key) ']'
-{
-  
+  return map(def('json')()('json["' + name + '"]'))
 }
   / '.[]'
 {
-  return '(function (json) { return json })'
+  return conj()
 }
   / '.'
 {
-  return '(function (json) { return json })'
+  return ''
 }
 
 string
@@ -64,7 +93,7 @@ string
   return str
 }
 
-character = '\\'? chr:[a-zA-Z_]
+character = chr:('\\'[\%!=/()"'@.:{}]/[a-zA-Z_])
 {
   return chr
 }
