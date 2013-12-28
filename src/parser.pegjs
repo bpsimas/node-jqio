@@ -70,6 +70,7 @@ comma
   return def('json')()(left + '(json).concat(' + right + '(json))')
 }
   / dot
+  / literal
 
 dot
   = '.' key:(identifier/string)
@@ -117,14 +118,17 @@ identifier "identifier"
   return name;
 }
 
+literal
+  = value:($string/number/true/false/null)
+{
+  return def()()(value)
+}
+
 // JSON Literal Definition {{{
 
-literal
-  = string
-  / number
-  / "true" _  { return true;  }
-  / "false" _ { return false; }
-  / "null" _  { return null;  }
+true  = "true"  _ { return true   }
+false = "false" _ { return false  }
+null  = "null"  _ { return null   }
 
 string "string"
   = '"' '"' _             { return "";    }
