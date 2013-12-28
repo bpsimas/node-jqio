@@ -80,7 +80,7 @@ dot
 {
   return map(def('json')()('json.slice(' + range.start + ', ' + range.end + ')'))
 }
-  / '.[' name:integer/string/key ']'
+  / '.[' name:int/string/key ']'
 {
   return map(def('json')()('json["' + name + '"]'))
 }
@@ -93,39 +93,99 @@ dot
   return ''
 }
 
-string
-  = '"' str:character* '"'
+key = identifier
+
+range = pair
+
+pair "pair"
+  = start:$(int) _ ':' _ end:$(int)
 {
-  return str
-}
-  / "'" str:character* "'"
-{
-  return str
+  return { start: start, end: end };
 }
 
-character = chr:('\\'[\%!=/()"'@.:{}]/[a-zA-Z_])
+// Lexical Elements {{{
+
+identifier "identifier"
+  = name:$([a-zA-Z_$\\] char*)
 {
-  return chr
+  return name;
 }
 
-key = str:[a-zA-Z_][a-zA-Z_0-9]*
-{
-  return str
-}
-
-range
-  = start:integer ':' end:integer
-{
-  return { start: start, end: end }
-}
-
-integer
-  = digits:[0-9]+
-{
-  return Number(digits.join(''))
-}
+// JSON Literal Definition {{{
 
 literal
-  = integer
-  / string
+  = string
+  / number
+  / "true" _  { return true;  }
+  / "false" _ { return false; }
+  / "null" _  { return null;  }
+
+string "string"
+  = '"' '"' _             { return "";    }
+  / '"' chars:chars '"' _ { return chars; }
+
+chars
+  = chars:char+ { return chars.join(""); }
+
+char
+  = [^"\\\0-\x1F\x7f] // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
+  / '\\"'  { return '"';  }
+  / "\\\\" { return "\\"; }
+  / "\\/"  { return "/";  }
+  / "\\b"  { return "\b"; }
+  / "\\f"  { return "\f"; }
+  / "\\n"  { return "\n"; }
+  / "\\r"  { return "\r"; }
+  / "\\t"  { return "\t"; }
+  / "\\u" digits:$(hexDigit hexDigit hexDigit hexDigit) 
+{
+  return String.fromCharCode(parseInt(digits, 16));
+}
+
+number "number"
+  = parts:$(int frac exp) _ { return parseFloat(parts); }
+  / parts:$(int frac) _     { return parseFloat(parts); }
+  / parts:$(int exp) _      { return parseFloat(parts); }
+  / parts:$(int) _          { return parseFloat(parts); }
+
+int
+  = digit19 digits
+  / digit
+  / "-" digit19 digits
+  / "-" digit
+
+frac
+  = "." digits
+
+exp
+  = e digits
+
+digits
+  = digit+
+
+e
+  = [eE] [+-]?
+
+digit
+  = [0-9]
+
+digit19
+  = [1-9]
+
+hexDigit
+  = [0-9a-fA-F]
+
+// }}}
+
+// ECMAScript whitespace {{{
+
+_ "whitespace"
+  = whitespace*
+
+whitespace
+  = [ \t\n\r]
+
+// }}}
+
+// }}}
 
