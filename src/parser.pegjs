@@ -1,7 +1,12 @@
 
 {
 
-  // def(<argument 1>, <argument 2>, ...)( body )( return value ) => function text
+  // def( <arglist> )( <body> )( <retval> )
+  // =>
+  // function (<arglist>) {
+  //   [exec <body>]
+  //   return <retval>
+  // }
   var def = function () {
     var capture = Array.prototype.slice.call(arguments, 0)
     return function () {
@@ -12,7 +17,7 @@
     }
   }
 
-  // map(<function code>) => map function text
+  // map(<code>) => function (array) { return [code(item) for item in array] }
   var map = function (f) {
     return def('a')(
         'var r = []',
@@ -22,7 +27,8 @@
     )('r')
   }
 
-  var reduce = function (s, f) {
+  // red(<initial>, <code>) => function (array) { return [initial = code(initial, item) for item in array] }
+  var red = function (s, f) {
     return def('a')(
         'var r = ' + s,
         'for (var i = 0; i != a.length; i++) {',
@@ -31,9 +37,9 @@
     )('r')
   }
 
-  // conj() => function text yield conjucted array from input list of array
+  // conj() => function (array) { return [item for item in items for items in array] }
   var conj = function () {
-    return reduce('[]', def('r', 'x')('Array.prototype.push.apply(r, x)')('r'));
+    return red('[]', def('r', 'x')('Array.prototype.push.apply(r, x)')('r'));
   }
 
 }
