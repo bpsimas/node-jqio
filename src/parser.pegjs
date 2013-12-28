@@ -112,7 +112,7 @@ pair "pair"
 // Lexical Elements {{{
 
 identifier "identifier"
-  = name:$([a-zA-Z_$\\] char*)
+  = name:$([a-zA-Z_$] [a-zA-Z0-9_$]*)
 {
   return name;
 }
@@ -146,7 +146,7 @@ char
   / "\\n"  { return "\n"; }
   / "\\r"  { return "\r"; }
   / "\\t"  { return "\t"; }
-  / "\\u" digits:$(hexDigit hexDigit hexDigit hexDigit) 
+  / "\\u" digits:$(hexDigit hexDigit hexDigit hexDigit)
 {
   return String.fromCharCode(parseInt(digits, 16));
 }
