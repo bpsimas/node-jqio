@@ -1,10 +1,10 @@
 {
   "name": "jqio",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Pipe-styled JSON processor",
   "keywords": ["jq", "json", "pipe", "filter"],
-  "repository": "git://github.com/kirisetsz/node-jqio.git",
-  "author": "kirisetsz <kirisetsz@gmail.com>",
+  "repository": "git://github.com/kamikat/node-jqio.git",
+  "author": "kamikat <kirisetsz@gmail.com>",
   "dependencies": { },
   "devDependencies": {
     "pegjs": ">= 0.8.0",
